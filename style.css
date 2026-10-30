@@ -1,6 +1,12 @@
 /* Общий файл стилей для всех страниц сайта.
    Стиль: Dark Fantasy / средневековье.
-   Тёмный камень, золото, кровавый бордовый и огонь свечей. */
+   Тёмный камень, золото, кровавый бордовый и огонь свечей.
+
+   Шрифты (все с Google Fonts):
+   - Cinzel Decorative - для английского логотипа и большого заголовка
+   - Cinzel            - для маленьких английских подписей над заголовками
+   - Cormorant SC      - для русских заголовков (похож на Cinzel, но знает кириллицу)
+   - EB Garamond       - для обычного текста, как в старых книгах */
 
 /* Цвета вынесены в переменные, чтобы их было легко поменять в одном месте */
 :root {
@@ -8,13 +14,19 @@
     --panel: #15101a;        /* фон карточек и блоков */
     --panel-light: #1d1624;
     --border: #3d2c2a;       /* рамки (тёмная бронза) */
-    --text: #ddd2c2;         /* основной текст (цвет старой бумаги) */
-    --muted: #9b8e86;        /* второстепенный текст */
-    --gold: #d4ae6a;         /* золото для заголовков */
+    --text: #e0d6c6;         /* основной текст (цвет старой бумаги) */
+    --muted: #a09389;        /* второстепенный текст */
+    --gold: #d9b56e;         /* золото для заголовков */
+    --gold-light: #f3dca0;
     --gold-dark: #8a6a35;
     --blood: #7a1622;        /* бордовый для кнопок */
     --blood-light: #a8243a;
     --fire: #ff8a3c;         /* огонь */
+
+    --font-deco: "Cinzel Decorative", "Cinzel", Georgia, serif;
+    --font-latin: "Cinzel", Georgia, serif;
+    --font-title: "Cormorant SC", Georgia, serif;
+    --font-text: "EB Garamond", Georgia, serif;
 }
 
 * {
@@ -24,8 +36,8 @@
 body {
     margin: 0;
     color: var(--text);
-    font-family: "Alegreya", Georgia, serif;
-    font-size: 19px;
+    font-family: var(--font-text);
+    font-size: 20px;
     line-height: 1.65;
     background-color: var(--bg);
     /* Фон в два слоя: сверху затемнение по краям (виньетка),
@@ -39,38 +51,51 @@ body {
 }
 
 h1, h2, h3 {
-    font-family: "Cormorant SC", Georgia, serif;
+    font-family: var(--font-title);
     font-weight: 700;
     color: var(--gold);
     letter-spacing: 2px;
     line-height: 1.2;
     /* лёгкое свечение, как от свечи */
-    text-shadow: 0 0 12px rgba(212, 174, 106, 0.25), 0 2px 0 #000;
+    text-shadow: 0 0 12px rgba(217, 181, 110, 0.25), 0 2px 0 #000;
 }
 
 h1 {
-    font-size: 46px;
+    font-size: 48px;
     margin: 0 0 10px;
 }
 
 h2 {
-    font-size: 32px;
-    margin: 0 0 10px;
+    font-size: 34px;
+    margin: 0 0 12px;
 }
 
 a {
     color: var(--gold);
+    transition: color 0.2s;
 }
 
 a:hover {
     color: var(--fire);
 }
 
+/* Маленькая английская надпись над заголовком, например "ABOUT THE PROJECT" */
+.kicker {
+    display: block;
+    font-family: var(--font-latin);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--blood-light);
+    margin-bottom: 4px;
+}
+
 /* ---------- шапка и меню ---------- */
 
 header {
     background: linear-gradient(#000, #0f0b13);
-    border-bottom: 2px solid var(--gold-dark);
+    border-bottom: 1px solid var(--gold-dark);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
     position: sticky;
     top: 0;
@@ -91,37 +116,77 @@ header {
 .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-family: "Cormorant SC", Georgia, serif;
-    font-weight: 700;
-    font-size: 26px;
-    color: var(--gold);
+    gap: 12px;
     text-decoration: none;
-    letter-spacing: 2px;
 }
 
 .logo img {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     image-rendering: pixelated;
+    transition: transform 0.4s;
+}
+
+/* при наведении меч слегка поворачивается и светится */
+.logo:hover img {
+    transform: rotate(-20deg) scale(1.1);
+    filter: drop-shadow(0 0 6px var(--fire));
+}
+
+.logo-name {
+    display: block;
+    font-family: var(--font-deco);
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1;
+    color: var(--gold);
+    letter-spacing: 1px;
+}
+
+.logo-sub {
+    display: block;
+    font-family: var(--font-latin);
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 4px;
 }
 
 nav a {
-    font-family: "Cormorant SC", Georgia, serif;
+    position: relative;
+    font-family: var(--font-title);
     font-weight: 700;
     font-size: 20px;
     letter-spacing: 1px;
     color: var(--text);
     text-decoration: none;
-    margin-left: 22px;
-    padding-bottom: 2px;
+    margin-left: 24px;
+    padding-bottom: 4px;
     white-space: nowrap;  /* чтобы «Все текстуры» не разрывалось на две строки */
+}
+
+/* линия под пунктом меню вырастает из середины при наведении */
+nav a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    bottom: 0;
+    height: 2px;
+    background-color: var(--blood-light);
+    transition: left 0.25s, right 0.25s;
 }
 
 nav a:hover,
 nav a.active {
     color: var(--gold);
-    border-bottom: 2px solid var(--blood-light);
+}
+
+nav a:hover::after,
+nav a.active::after {
+    left: 0;
+    right: 0;
 }
 
 /* ---------- главный баннер ---------- */
@@ -129,12 +194,12 @@ nav a.active {
 .hero {
     position: relative;     /* чтобы угольки и текст располагались внутри баннера */
     overflow: hidden;
-    height: 460px;
+    height: 520px;
     background-image: url("images/banner.png");
     background-size: cover;
     background-position: center bottom;
     image-rendering: pixelated;
-    border-bottom: 2px solid var(--gold-dark);
+    border-bottom: 1px solid var(--gold-dark);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -146,7 +211,7 @@ nav a.active {
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at center, rgba(5, 3, 8, 0.75) 0%, rgba(5, 3, 8, 0.3) 45%, transparent 70%);
+    background: radial-gradient(ellipse at center, rgba(5, 3, 8, 0.8) 0%, rgba(5, 3, 8, 0.35) 45%, transparent 70%);
     z-index: 1;
 }
 
@@ -165,28 +230,67 @@ nav a.active {
     position: relative;
     z-index: 2;
     padding: 0 16px;
-    margin-top: -60px;
+    margin-top: -40px;
+    animation: appear 1.2s ease-out both;
 }
 
+.hero .motto {
+    font-family: var(--font-latin);
+    font-size: 15px;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: var(--blood-light);
+    margin: 0;
+    text-shadow: 0 0 10px rgba(168, 36, 58, 0.6);
+}
+
+/* Большой заголовок "Dark Fantasy" с золотым переливом.
+   Текст закрашивается градиентом (background-clip: text),
+   а градиент медленно едет слева направо - получается блик. */
 .hero h1 {
-    font-size: 58px;
-    line-height: 1.1;
+    font-family: var(--font-deco);
+    font-size: 84px;
+    line-height: 1.05;
+    margin: 6px 0 4px;
+    letter-spacing: 3px;
+    background: linear-gradient(110deg, var(--gold-dark) 20%, var(--gold-light) 40%, var(--gold) 50%, var(--gold-dark) 70%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(0 3px 0 #000) drop-shadow(0 0 18px rgba(217, 181, 110, 0.3));
+    animation: shine 6s linear infinite;
+}
+
+@keyframes shine {
+    from { background-position: 100% 0; }
+    to   { background-position: -150% 0; }
 }
 
 .hero .subtitle {
-    font-size: 21px;
-    font-style: italic;
+    font-family: var(--font-title);
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 2px;
     color: var(--text);
+    margin: 0 0 6px;
     text-shadow: 0 2px 4px #000;
+}
+
+.hero .version {
+    font-style: italic;
+    color: var(--muted);
+    margin: 0;
 }
 
 .author {
     display: inline-block;
-    margin: 6px 0 22px;
-    padding: 6px 18px;
+    margin: 18px 0 26px;
+    padding: 6px 22px;
     border-top: 1px solid var(--gold-dark);
     border-bottom: 1px solid var(--gold-dark);
-    background-color: rgba(0, 0, 0, 0.45);
+    background-color: rgba(0, 0, 0, 0.5);
     color: var(--muted);
     font-style: italic;
 }
@@ -196,9 +300,25 @@ nav a.active {
     font-style: normal;
 }
 
-/* Угольки, которые поднимаются вверх. Каждый - маленький квадратик span.
-   У каждого своя позиция и задержка анимации (nth-child). */
-.ember {
+/* Плавное появление снизу: используется для баннера, блоков и карточек */
+@keyframes appear {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- угольки ----------
+   Блок .embers кладётся внутрь любого элемента с position: relative.
+   Внутри 9 квадратиков span, у каждого своё место и задержка (nth-child). */
+
+.embers {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;   /* чтобы угольки не мешали нажимать на ссылки */
+    z-index: 1;
+}
+
+.embers span {
     position: absolute;
     bottom: -10px;
     width: 4px;
@@ -206,18 +326,18 @@ nav a.active {
     background-color: var(--fire);
     box-shadow: 0 0 6px 2px rgba(255, 120, 40, 0.7);
     animation: rise 7s linear infinite;
-    z-index: 1;
+    opacity: 0;
 }
 
-.ember:nth-child(1) { left: 8%;  animation-delay: 0s; }
-.ember:nth-child(2) { left: 18%; animation-delay: 2.5s; animation-duration: 9s; }
-.ember:nth-child(3) { left: 29%; animation-delay: 4s; }
-.ember:nth-child(4) { left: 41%; animation-delay: 1s; animation-duration: 8s; }
-.ember:nth-child(5) { left: 55%; animation-delay: 5s; }
-.ember:nth-child(6) { left: 63%; animation-delay: 3s; animation-duration: 10s; }
-.ember:nth-child(7) { left: 74%; animation-delay: 6s; }
-.ember:nth-child(8) { left: 86%; animation-delay: 1.5s; animation-duration: 9s; }
-.ember:nth-child(9) { left: 94%; animation-delay: 3.5s; }
+.embers span:nth-child(1) { left: 8%;  animation-delay: 0s; }
+.embers span:nth-child(2) { left: 18%; animation-delay: 2.5s; animation-duration: 9s; }
+.embers span:nth-child(3) { left: 29%; animation-delay: 4s; width: 3px; height: 3px; }
+.embers span:nth-child(4) { left: 41%; animation-delay: 1s; animation-duration: 8s; }
+.embers span:nth-child(5) { left: 55%; animation-delay: 5s; width: 3px; height: 3px; }
+.embers span:nth-child(6) { left: 63%; animation-delay: 3s; animation-duration: 10s; }
+.embers span:nth-child(7) { left: 74%; animation-delay: 6s; }
+.embers span:nth-child(8) { left: 86%; animation-delay: 1.5s; animation-duration: 9s; width: 3px; height: 3px; }
+.embers span:nth-child(9) { left: 94%; animation-delay: 3.5s; }
 
 @keyframes rise {
     0%   { transform: translate(0, 0);        opacity: 0; }
@@ -234,15 +354,26 @@ main {
     padding: 30px 16px 60px;
 }
 
+/* Заголовок внутренних страниц: с угольками, как на главной */
 .page-title {
+    position: relative;
+    overflow: hidden;
     text-align: center;
-    padding-top: 20px;
+    padding: 70px 16px 40px;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(ellipse at bottom, rgba(122, 22, 34, 0.25), transparent 70%);
+}
+
+.page-title > *:not(.embers) {
+    position: relative;
+    z-index: 2;
+    animation: appear 0.9s ease-out both;
 }
 
 .page-title p {
     color: var(--muted);
     font-style: italic;
-    margin-top: 0;
+    margin: 0;
 }
 
 /* Разделитель с ромбом посередине: ——— ◆ ——— */
@@ -251,7 +382,7 @@ main {
     align-items: center;
     gap: 14px;
     color: var(--gold-dark);
-    margin: 30px auto;
+    margin: 34px auto;
     max-width: 500px;
 }
 
@@ -263,6 +394,27 @@ main {
     background: linear-gradient(to right, transparent, var(--gold-dark), transparent);
 }
 
+/* Цитата-эпиграф на главной */
+.epigraph {
+    max-width: 680px;
+    margin: 10px auto;
+    text-align: center;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--text);
+}
+
+.epigraph cite {
+    display: block;
+    margin-top: 8px;
+    font-family: var(--font-latin);
+    font-style: normal;
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+}
+
 /* Блок с текстом: двойная рамка, как у старой книги */
 .box {
     position: relative;
@@ -270,8 +422,9 @@ main {
     border: 1px solid var(--border);
     outline: 1px solid #000;
     box-shadow: inset 0 0 0 4px var(--panel), inset 0 0 0 5px #2a1e1c, 0 10px 30px rgba(0, 0, 0, 0.6);
-    padding: 28px 32px;
+    padding: 30px 34px;
     margin: 24px 0;
+    animation: appear 0.9s ease-out both;
 }
 
 /* золотые уголки у блока */
@@ -279,8 +432,8 @@ main {
 .box::after {
     content: "";
     position: absolute;
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     border-color: var(--gold);
     border-style: solid;
 }
@@ -297,17 +450,18 @@ main {
     border-width: 0 2px 2px 0;
 }
 
-.box ol li {
+.box ol li,
+.box ul li {
     margin-bottom: 8px;
 }
 
 /* Буквица - большая первая буква абзаца, как в старинных книгах */
 .drop-cap::first-letter {
     float: left;
-    font-family: "Cormorant SC", Georgia, serif;
-    font-size: 64px;
+    font-family: var(--font-title);
+    font-size: 70px;
     line-height: 0.85;
-    padding: 6px 8px 0 0;
+    padding: 6px 10px 0 0;
     color: var(--blood-light);
     text-shadow: 0 0 10px rgba(168, 36, 58, 0.5);
 }
@@ -318,15 +472,20 @@ main {
     gap: 24px;
 }
 
+/* второй блок появляется чуть позже первого */
+.two-columns .box:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
 .button {
     display: inline-block;
-    font-family: "Cormorant SC", Georgia, serif;
+    font-family: var(--font-title);
     font-weight: 700;
     font-size: 20px;
     letter-spacing: 1px;
     color: #f4e6d0;
     text-decoration: none;
-    padding: 10px 26px;
+    padding: 10px 28px;
     background: linear-gradient(var(--blood-light), var(--blood));
     border: 1px solid var(--gold-dark);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.6);
@@ -342,7 +501,14 @@ main {
 
 .button.big {
     font-size: 24px;
-    padding: 14px 36px;
+    padding: 14px 40px;
+    /* большая кнопка медленно "дышит" огнём */
+    animation: glow 3s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 8px rgba(255, 110, 50, 0.2); }
+    50%      { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 24px rgba(255, 110, 50, 0.55); }
 }
 
 /* ---------- каталог текстур ---------- */
@@ -351,7 +517,7 @@ main {
     width: 100%;
     padding: 12px 16px;
     font-family: inherit;  /* поля ввода сами не берут шрифт страницы */
-    font-size: 19px;
+    font-size: 20px;
     background-color: #0d0a10;
     color: var(--text);
     border: 1px solid var(--border);
@@ -360,34 +526,46 @@ main {
 
 .search:focus {
     border-color: var(--gold-dark);
-    box-shadow: 0 0 10px rgba(212, 174, 106, 0.2);
+    box-shadow: 0 0 10px rgba(217, 181, 110, 0.2);
 }
 
 .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: 1fr 1fr;   /* 4 карточки = 2 ряда по 2 */
     gap: 24px;
     margin-top: 24px;
 }
 
 .card {
     position: relative;
+    display: flex;               /* чтобы кнопка "Скачать" была внизу у всех карточек */
+    flex-direction: column;
     background: linear-gradient(var(--panel-light), var(--panel));
     border: 1px solid var(--border);
     box-shadow: inset 0 0 0 4px var(--panel), inset 0 0 0 5px #2a1e1c, 0 10px 25px rgba(0, 0, 0, 0.6);
-    padding: 24px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 26px;
+    transition: transform 0.25s, box-shadow 0.25s;
+    animation: appear 0.8s ease-out both;
 }
 
+/* карточки появляются по очереди */
+.card:nth-child(2) { animation-delay: 0.1s; }
+.card:nth-child(3) { animation-delay: 0.2s; }
+.card:nth-child(4) { animation-delay: 0.3s; }
+
 .card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
     border-color: var(--gold-dark);
-    box-shadow: inset 0 0 0 4px var(--panel), inset 0 0 0 5px #2a1e1c, 0 0 25px rgba(168, 36, 58, 0.35);
+    box-shadow: inset 0 0 0 4px var(--panel), inset 0 0 0 5px #2a1e1c, 0 0 28px rgba(168, 36, 58, 0.4);
+}
+
+.card .kicker {
+    color: var(--gold-dark);
 }
 
 .card h3 {
-    margin: 0 0 4px;
-    font-size: 28px;
+    margin: 0 0 6px;
+    font-size: 30px;
 }
 
 .card .preview {
@@ -397,12 +575,17 @@ main {
     background-color: #241c2a;
     border: 1px solid #000;
     padding: 12px;
-    margin: 10px 0;
+    margin: 12px 0;
+}
+
+.card .button {
+    margin-top: auto;            /* прижимает кнопку к низу карточки */
+    align-self: flex-start;
 }
 
 .tags {
     color: var(--muted);
-    font-size: 16px;
+    font-size: 17px;
     font-style: italic;
     margin: 0;
 }
@@ -433,7 +616,7 @@ main {
 
 .tex {
     text-align: center;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--muted);
 }
 
@@ -445,7 +628,7 @@ main {
     margin: 0 auto 6px;
     border: 1px solid #000;
     box-shadow: 0 0 0 1px var(--border), 0 6px 14px rgba(0, 0, 0, 0.7);
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .tex img.item {
@@ -453,7 +636,8 @@ main {
 }
 
 .tex:hover img {
-    transform: scale(1.08);
+    transform: scale(1.1) rotate(-2deg);
+    box-shadow: 0 0 0 1px var(--gold-dark), 0 0 18px rgba(255, 110, 50, 0.4);
 }
 
 .tex:hover {
@@ -473,42 +657,106 @@ main {
 }
 
 .contacts dt {
-    font-family: "Cormorant SC", Georgia, serif;
+    font-family: var(--font-latin);
+    font-size: 13px;
     font-weight: 700;
-    color: var(--gold);
-    font-size: 22px;
-    margin-top: 18px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--blood-light);
+    margin-top: 22px;
+}
+
+.contacts dt:first-child {
+    margin-top: 0;
 }
 
 .contacts dd {
     margin: 0;
-    font-size: 21px;
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 26px;
+    color: var(--gold);
+}
+
+.contacts dd a {
+    text-decoration: none;
+    /* у Cormorant SC все буквы заглавные, а почту лучше писать как есть */
+    font-family: var(--font-text);
+    font-weight: 400;
 }
 
 /* ---------- подвал ---------- */
 
 footer {
+    position: relative;
+    overflow: hidden;
     background: linear-gradient(#0f0b13, #000);
-    border-top: 2px solid var(--gold-dark);
+    border-top: 1px solid var(--gold-dark);
     text-align: center;
     color: var(--muted);
-    font-size: 15px;
-    padding: 24px 16px;
+    font-size: 16px;
+    padding: 34px 16px 26px;
+}
+
+footer > *:not(.embers) {
+    position: relative;
+    z-index: 2;
+}
+
+.footer-logo {
+    font-family: var(--font-deco);
+    font-weight: 700;
+    font-size: 26px;
+    color: var(--gold);
+    margin: 0;
+}
+
+.footer-motto {
+    font-family: var(--font-latin);
+    font-size: 12px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--blood-light);
+    margin: 2px 0 14px;
+}
+
+footer small {
+    display: block;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Если в настройках компьютера включено "уменьшить движение",
+   отключаем анимации - так делают на профессиональных сайтах */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
 }
 
 /* ---------- для телефонов ---------- */
 
 @media (max-width: 700px) {
     body {
-        font-size: 17px;
+        font-size: 18px;
     }
 
     .hero {
-        height: 360px;
+        height: 440px;
     }
 
     .hero h1 {
-        font-size: 38px;
+        font-size: 48px;
+    }
+
+    .hero .subtitle {
+        font-size: 22px;
+    }
+
+    .hero .motto {
+        letter-spacing: 4px;
+        font-size: 12px;
     }
 
     h1 {
@@ -518,13 +766,15 @@ footer {
     nav a {
         margin-left: 0;
         margin-right: 16px;
+        font-size: 18px;
     }
 
     .box {
-        padding: 22px 20px;
+        padding: 24px 20px;
     }
 
-    .two-columns {
+    .two-columns,
+    .cards {
         grid-template-columns: 1fr;
     }
 }

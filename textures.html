@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тёмные текстуры — каталог</title>
+    <title>Dark Fantasy — каталог</title>
     <link rel="icon" href="images/icon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital@0;1&family=Cormorant+SC:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@700&family=Cormorant+SC:wght@700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 
 <header>
     <div class="header-inner">
-        <a class="logo" href="index.html"><img src="images/icon.png" alt="">Тёмные текстуры</a>
+        <a class="logo" href="index.html">
+            <img src="images/icon.png" alt="">
+            <span>
+                <span class="logo-name">Dark Fantasy</span>
+                <span class="logo-sub">Minecraft textures</span>
+            </span>
+        </a>
         <nav>
             <a href="index.html">Главная</a>
             <a href="textures.html" class="active">Текстуры</a>
@@ -22,20 +28,21 @@
     </div>
 </header>
 
+<div class="page-title">
+    <div class="embers"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <span class="kicker">The Vault</span>
+    <h1>Хранилище текстур</h1>
+    <p>Категория: Фэнтези · Версия игры: 1.20.1</p>
+</div>
+
 <main>
-    <div class="page-title">
-        <h1>Хранилище текстур</h1>
-        <p>Категория: Фэнтези · Версия игры: 1.20.1</p>
-    </div>
-
-    <div class="divider">◆</div>
-
     <!-- поле поиска: при вводе текста скрипт прячет карточки, в которых его нет -->
     <input type="text" id="search" class="search" placeholder="Поиск по названию, например «руды» или «меч»">
 
     <div class="cards">
 
         <div class="card">
+            <span class="kicker">Cursed Stone</span>
             <h3>Проклятый камень</h3>
             <p class="tags">Камень, булыжник, каменные кирпичи, кирпичи, обсидиан</p>
             <img class="preview" src="images/cursed_stone.png" alt="Текстуры пака Проклятый камень">
@@ -44,6 +51,7 @@
         </div>
 
         <div class="card">
+            <span class="kicker">Glowing Ores</span>
             <h3>Светящиеся руды</h3>
             <p class="tags">Уголь, железо, золото, алмазы, редстоун, изумруды, лазурит</p>
             <img class="preview" src="images/dark_ores.png" alt="Текстуры пака Светящиеся руды">
@@ -52,6 +60,7 @@
         </div>
 
         <div class="card">
+            <span class="kicker">Dead Forest</span>
             <h3>Мёртвый лес</h3>
             <p class="tags">Дубовые доски, бревно, земля, песок, гравий</p>
             <img class="preview" src="images/dead_forest.png" alt="Текстуры пака Мёртвый лес">
@@ -60,6 +69,7 @@
         </div>
 
         <div class="card">
+            <span class="kicker">Blades of Darkness</span>
             <h3>Клинки тьмы</h3>
             <p class="tags">Железный, золотой, алмазный и незеритовый меч</p>
             <img class="preview" src="images/dark_blades.png" alt="Текстуры пака Клинки тьмы">
@@ -79,8 +89,11 @@
 </main>
 
 <footer>
-    © 2026 Швецов Артем Игоревич. Проект по информатике.<br>
-    Не является официальным продуктом Minecraft и не связан с Mojang.
+    <div class="embers"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <p class="footer-logo">Dark Fantasy</p>
+    <p class="footer-motto">Forged in shadow</p>
+    © 2026 Швецов Артем Игоревич · Проект по информатике · Школа № 2100
+    <small>Не является официальным продуктом Minecraft и не связан с Mojang.</small>
 </footer>
 
 <script src="search.js"></script>
