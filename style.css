@@ -778,3 +778,111 @@ footer small {
         grid-template-columns: 1fr;
     }
 }
+
+/* ---------- окно просмотра текстуры (страница "Все текстуры") ---------- */
+
+.hint {
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
+}
+
+.tex {
+    cursor: pointer;    /* курсор-рука показывает, что на текстуру можно нажать */
+}
+
+/* затемнённый фон на весь экран, сначала спрятан */
+.viewer {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background-color: rgba(5, 3, 8, 0.92);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* класс open добавляет скрипт, когда нужно показать окно */
+.viewer.open {
+    display: flex;
+    animation: fade 0.3s ease-out;
+}
+
+@keyframes fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.viewer-inner {
+    text-align: center;
+}
+
+.viewer-name {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 34px;
+    color: var(--gold);
+    margin: 30px 0 4px;
+}
+
+.viewer-hint {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 16px;
+    margin: 0;
+}
+
+/* картинка для предметов (мечи, яблоки...) - их нет смысла показывать кубом */
+.viewer-flat {
+    display: none;
+    width: 256px;
+    height: 256px;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 0 20px rgba(255, 110, 50, 0.35));
+    animation: float 3s ease-in-out infinite;
+}
+
+/* предмет медленно покачивается вверх-вниз */
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%      { transform: translateY(-14px) rotate(3deg); }
+}
+
+/* 3D-куб. perspective - насколько сильно видна глубина */
+.scene {
+    width: 180px;
+    height: 180px;
+    margin: 40px auto;
+    perspective: 700px;
+}
+
+.cube {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;   /* грани остаются в 3D, а не сплющиваются */
+    animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotateX(-25deg) rotateY(0deg); }
+    to   { transform: rotateX(-25deg) rotateY(360deg); }
+}
+
+.face {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    background-size: cover;
+    image-rendering: pixelated;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+/* каждая грань поворачивается и отодвигается на половину размера куба (90px) */
+.front  { transform: rotateY(0deg)   translateZ(90px); }
+.back   { transform: rotateY(180deg) translateZ(90px); }
+.right  { transform: rotateY(90deg)  translateZ(90px); filter: brightness(0.75); }
+.left   { transform: rotateY(-90deg) translateZ(90px); filter: brightness(0.75); }
+.top    { transform: rotateX(90deg)  translateZ(90px); filter: brightness(1.15); }
+.bottom { transform: rotateX(-90deg) translateZ(90px); filter: brightness(0.5); }

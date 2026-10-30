@@ -596,6 +596,210 @@ def ender_pearl():
 
 
 # =====================================================================
+# Доспехи (иконки в инвентаре). L - светлый, A - основной, M - тёмный,
+# G - камень/глаза, D - прорезь шлема.
+# =====================================================================
+
+HELMET = [
+    "",
+    "",
+    "",
+    ".....LLLLLL",
+    "....LAAAAAAM",
+    "...LAAAAAAAAM",
+    "...AAAAAAAAAM",
+    "...ADGDADGDAM",
+    "...AAAAAAAAAM",
+    "...AAAM.MAAAM",
+    "...MMM...MMMM",
+]
+
+CHESTPLATE = [
+    "",
+    "",
+    "..LLL......LLL",
+    "..LAAL....LAAM",
+    "..AAAALLLLAAAM",
+    "..AAAAAAAAAAAM",
+    "...AAAAGGAAAM",
+    "...AAAAGGAAAM",
+    "...AAAAAAAAAM",
+    "...AAAAAAAAAM",
+    "...MAAAAAAAMM",
+    "....MMMMMMMM",
+]
+
+LEGGINGS = [
+    "",
+    "",
+    "...LLLLLLLLLL",
+    "...AAAAGGAAAM",
+    "...AAAAAAAAAM",
+    "...AAAM..AAAM",
+    "...AAAM..AAAM",
+    "...AAAM..AAAM",
+    "...AAAM..AAAM",
+    "...AAAM..AAAM",
+    "...AAAM..AAAM",
+    "...MMMM..MMMM",
+]
+
+BOOTS = [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "...LLL....LLL",
+    "...AAM....AAM",
+    "...AAM....AAM",
+    "...AAAM...AAAM",
+    "..LAAAM..LAAAM",
+    "..MMMMM..MMMMM",
+]
+
+# цвета для каждого материала
+ARMOR = {
+    "iron": {"L": "#e2e6f0", "A": "#9ba0b0", "M": "#5b5f6e", "G": "#d63a4a", "D": "#0b070d"},
+    "diamond": {"L": "#c8ffff", "A": "#3cc8d8", "M": "#16717f", "G": "#ffffff", "D": "#0b070d"},
+    "netherite": {"L": "#8a7a98", "A": "#4f4458", "M": "#2a2330", "G": "#c48aff", "D": "#0b070d"},
+}
+
+
+# =====================================================================
+# Мастерская: верстак, печь, книжная полка
+# =====================================================================
+
+def wood_frame(seed):
+    # доски с тёмной рамкой по краю - основа для верстака
+    img = planks(seed)
+    dark = rgb("#120b0e")
+    for i in range(SIZE):
+        for p in [(i, 0), (i, 15), (0, i), (15, i)]:
+            img.putpixel(p, dark)
+    return img
+
+
+def crafting_table_top(seed):
+    img = wood_frame(seed)
+    # магический круг из фиолетовых пикселей посередине
+    for x in range(SIZE):
+        for y in range(SIZE):
+            d = math.sqrt((x - 7.5) ** 2 + (y - 7.5) ** 2)
+            if 4.2 < d < 5.2:
+                img.putpixel((x, y), rgb("#8a4fd0"))
+    for p in [(7, 7), (8, 8), (7, 8), (8, 7)]:
+        img.putpixel(p, rgb("#d9b8ff"))
+    return img
+
+
+def crafting_table_front(seed):
+    img = wood_frame(seed)
+    # на стене висят инструменты: молот и кинжал
+    for y in range(2, 9):
+        img.putpixel((4, y), rgb("#3a2418"))       # рукоять молота
+    for x in range(2, 7):
+        img.putpixel((x, 2), rgb("#9ba0b0"))       # головка молота
+        img.putpixel((x, 3), rgb("#5b5f6e"))
+    for y in range(2, 8):
+        img.putpixel((11, y), rgb("#d0d4e0"))      # клинок
+    img.putpixel((10, 8), rgb("#6b1f2b"))          # гарда
+    img.putpixel((11, 8), rgb("#6b1f2b"))
+    img.putpixel((12, 8), rgb("#6b1f2b"))
+    img.putpixel((11, 9), rgb("#3a2418"))
+    return img
+
+
+def crafting_table_side(seed):
+    img = wood_frame(seed)
+    # полка с тремя бутылочками зелий
+    for x in range(1, 15):
+        img.putpixel((x, 9), rgb("#120b0e"))
+    for x, color in [(3, "#c2451f"), (7, "#2fd46a"), (11, "#8a4fd0")]:
+        img.putpixel((x, 4), rgb("#d8cdb8"))       # пробка
+        for y in range(5, 9):
+            img.putpixel((x, y), rgb(color))
+            img.putpixel((x + 1, y), lighter(rgb(color), -0.35))
+    return img
+
+
+def furnace_side(seed):
+    img = noise_texture(STONE, seed, passes=2, rough=0.2)
+    # верх и низ печи из более тёмного камня
+    for x in range(SIZE):
+        for y in (0, 1, 14, 15):
+            img.putpixel((x, y), lighter(img.getpixel((x, y)), -0.35))
+    return img
+
+
+def furnace_top(seed):
+    return paint_pieces(brick_map(8, 8, 4), STONE, "#0e0b12", seed, bevel=0.18)
+
+
+def furnace_front(seed, lit):
+    img = furnace_side(seed)
+    # тёмное отверстие внизу, решётка из вертикальных прутьев
+    for x in range(3, 13):
+        for y in range(8, 14):
+            if lit:
+                # огонь: чем ниже, тем ярче
+                color = mix(rgb("#7a1622"), rgb("#ffd27a"), (y - 8) / 5)
+            else:
+                color = rgb("#060408")
+            img.putpixel((x, y), color)
+    for x in (5, 8, 11):
+        for y in range(8, 14):
+            img.putpixel((x, y), rgb("#2b2533"))
+    for x in range(3, 13):
+        img.putpixel((x, 7), rgb("#4b4258"))   # каменная полка над отверстием
+    return img
+
+
+def bookshelf(seed):
+    rnd = random.Random(seed)
+    img = planks(seed)
+    book_colors = ["#5a1420", "#1f3a2a", "#232a52", "#4a2a5a", "#5a3a1c", "#2a2a2a"]
+    # две полки с книгами: строки 2-6 и 9-13
+    for top in (2, 9):
+        x = 1
+        while x < 15:
+            width = rnd.choice([1, 2])
+            color = rgb(rnd.choice(book_colors))
+            height = rnd.randint(4, 5)
+            for dx in range(width):
+                if x + dx > 14:
+                    break
+                for y in range(top + 5 - height, top + 5):
+                    img.putpixel((x + dx, y), color if dx == 0 else lighter(color, -0.3))
+                img.putpixel((x + dx, top + 5 - height), rgb("#d9b56e") if rnd.random() < 0.3 else lighter(color, 0.3))
+            x += width
+    return img
+
+
+def metal_block(light, mid, dark, rune):
+    # Блок из металла или самоцвета: светлый край сверху-слева, тёмный снизу-справа,
+    # посередине выгравирован ромб-руна
+    img = Image.new("RGBA", (SIZE, SIZE))
+    rnd = random.Random(light)
+    for x in range(SIZE):
+        for y in range(SIZE):
+            if x == 0 or y == 0:
+                color = rgb(light)
+            elif x == 15 or y == 15:
+                color = rgb(dark)
+            else:
+                color = lighter(rgb(mid), rnd.uniform(-0.08, 0.08))
+            img.putpixel((x, y), color)
+    for i in range(5):
+        for p in [(7 - i, 3 + i), (8 + i, 3 + i), (7 - i, 12 - i), (8 + i, 12 - i)]:
+            img.putpixel(p, rgb(rune))
+    return img
+
+
+# =====================================================================
 # Описание паков: название, описание и какие файлы чем рисовать.
 # Русские названия текстур нужны для страницы "Все текстуры".
 # =====================================================================
@@ -676,11 +880,46 @@ PACKS = [
             "item/apple.png": ("Кровавое яблоко", draw_template(APPLE, {"R": "#8b1424", "D": "#4a0a14", "W": "#ff8a8a", "S": "#3a2418", "G": "#2c3a24"})),
             "item/golden_apple.png": ("Золотое яблоко", draw_template(APPLE, {"R": "#e8b03a", "D": "#8a5a12", "W": "#fff6c4", "S": "#3a2418", "G": "#c08a22"})),
             "item/ender_pearl.png": ("Жемчуг Края", ender_pearl()),
+            "block/iron_block.png": ("Железный блок", metal_block("#ffffff", "#b4b8c4", "#5b5f6e", "#6e7280")),
+            "block/gold_block.png": ("Золотой блок", metal_block("#fff6c4", "#e0a531", "#8a5a12", "#a8741a")),
+            "block/diamond_block.png": ("Алмазный блок", metal_block("#d4ffff", "#3cc8d8", "#16717f", "#1a8094")),
+            "block/emerald_block.png": ("Изумрудный блок", metal_block("#b8ffcb", "#2fd46a", "#0f6e33", "#1d8a42")),
             "item/book.png": ("Книга заклинаний", draw_template(BOOK, {"R": "#4a0f1a", "G": "#d9b56e", "W": "#ff8a3c", "P": "#d8cdb8", "D": "#2a070e"})),
+        },
+    },
+    {
+        "id": "knight_armor",
+        "name": "Доспехи рыцаря",
+        "textures": {},
+    },
+    {
+        "id": "alchemist_workshop",
+        "name": "Мастерская алхимика",
+        "textures": {
+            "block/crafting_table_top.png": ("Верстак (сверху)", crafting_table_top(31)),
+            "block/crafting_table_front.png": ("Верстак (спереди)", crafting_table_front(31)),
+            "block/crafting_table_side.png": ("Верстак (сбоку)", crafting_table_side(31)),
+            "block/furnace_front.png": ("Печь", furnace_front(32, lit=False)),
+            "block/furnace_front_on.png": ("Горящая печь", furnace_front(32, lit=True)),
+            "block/furnace_side.png": ("Печь (сбоку)", furnace_side(32)),
+            "block/furnace_top.png": ("Печь (сверху)", furnace_top(33)),
+            "block/bookshelf.png": ("Книжная полка", bookshelf(34)),
         },
     },
 ]
 
+# Доспехи заполняем циклом: 3 материала x 4 предмета = 12 картинок
+ARMOR_NAMES = {"iron": "Железн", "diamond": "Алмазн", "netherite": "Незеритов"}
+ARMOR_PARTS = [
+    ("helmet", HELMET, "ый шлем"),
+    ("chestplate", CHESTPLATE, "ый нагрудник"),
+    ("leggings", LEGGINGS, "ые поножи"),
+    ("boots", BOOTS, "ые ботинки"),
+]
+for material in ["iron", "diamond", "netherite"]:
+    for part, template, ending in ARMOR_PARTS:
+        name = ARMOR_NAMES[material] + ending
+        PACKS[-2]["textures"]["item/" + material + "_" + part + ".png"] = (name, draw_template(template, ARMOR[material]))
 # Общий пак: все текстуры из всех паков в одном файле
 ALL_PACK = {"id": "dark_fantasy_all", "name": "Тёмное фэнтези: все текстуры", "textures": {}}
 for p in PACKS:
