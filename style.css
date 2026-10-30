@@ -787,6 +787,48 @@ footer small {
     font-style: italic;
 }
 
+/* кнопки фильтра над текстурами */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.filter,
+.tool {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--text);
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+    padding: 6px 18px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.filter:hover,
+.tool:hover {
+    color: var(--gold);
+    border-color: var(--gold-dark);
+}
+
+.filter.active,
+.tool.active {
+    color: var(--gold);
+    border-color: var(--gold);
+    box-shadow: 0 0 12px rgba(217, 181, 110, 0.25);
+}
+
+.filter.random {
+    color: #f4e6d0;
+    background: linear-gradient(var(--blood-light), var(--blood));
+    border-color: var(--gold-dark);
+}
+
 .tex {
     cursor: pointer;    /* курсор-рука показывает, что на текстуру можно нажать */
 }
@@ -797,10 +839,9 @@ footer small {
     position: fixed;
     inset: 0;
     z-index: 100;
-    background-color: rgba(5, 3, 8, 0.92);
+    background: radial-gradient(ellipse at center, rgba(40, 18, 30, 0.95), rgba(5, 3, 8, 0.97) 70%);
     align-items: center;
     justify-content: center;
-    cursor: pointer;
 }
 
 /* класс open добавляет скрипт, когда нужно показать окно */
@@ -816,6 +857,52 @@ footer small {
 
 .viewer-inner {
     text-align: center;
+    padding: 0 16px;
+}
+
+.viewer-close {
+    position: absolute;
+    top: 18px;
+    right: 24px;
+    font-size: 30px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.viewer-close:hover {
+    color: var(--fire);
+}
+
+/* большие стрелки по бокам */
+.viewer-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 70px;
+    line-height: 1;
+    color: var(--gold-dark);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: color 0.2s;
+}
+
+.viewer-arrow:hover {
+    color: var(--gold);
+}
+
+.viewer-arrow.left  { left: 10px; }
+.viewer-arrow.right { right: 10px; }
+
+/* место под куб/картинку/сетку - одинаковой высоты, чтобы текст не прыгал */
+.stage {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .viewer-name {
@@ -823,21 +910,34 @@ footer small {
     font-weight: 700;
     font-size: 34px;
     color: var(--gold);
-    margin: 30px 0 4px;
+    margin: 4px 0 0;
+}
+
+.viewer-count {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 14px;
+}
+
+.viewer-tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
 }
 
 .viewer-hint {
     color: var(--muted);
     font-style: italic;
-    font-size: 16px;
+    font-size: 15px;
     margin: 0;
 }
 
 /* картинка для предметов (мечи, яблоки...) - их нет смысла показывать кубом */
 .viewer-flat {
-    display: none;
-    width: 256px;
-    height: 256px;
+    width: 240px;
+    height: 240px;
     image-rendering: pixelated;
     filter: drop-shadow(0 0 20px rgba(255, 110, 50, 0.35));
     animation: float 3s ease-in-out infinite;
@@ -849,12 +949,27 @@ footer small {
     50%      { transform: translateY(-14px) rotate(3deg); }
 }
 
+/* сетка 3x3: одна картинка повторяется 9 раз */
+.tiles {
+    width: 270px;
+    height: 270px;
+    background-size: 90px 90px;
+    image-rendering: pixelated;
+    border: 1px solid var(--gold-dark);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+}
+
 /* 3D-куб. perspective - насколько сильно видна глубина */
 .scene {
-    width: 180px;
-    height: 180px;
-    margin: 40px auto;
+    width: 170px;
+    height: 170px;
     perspective: 700px;
+    cursor: grab;
+    touch-action: none;    /* чтобы на телефоне палец крутил куб, а не страницу */
+}
+
+.scene:active {
+    cursor: grabbing;
 }
 
 .cube {
@@ -862,27 +977,33 @@ footer small {
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;   /* грани остаются в 3D, а не сплющиваются */
-    animation: spin 10s linear infinite;
-}
-
-@keyframes spin {
-    from { transform: rotateX(-25deg) rotateY(0deg); }
-    to   { transform: rotateX(-25deg) rotateY(360deg); }
+    /* сам поворот задаёт скрипт viewer.js */
 }
 
 .face {
     position: absolute;
-    width: 180px;
-    height: 180px;
+    width: 170px;
+    height: 170px;
     background-size: cover;
     image-rendering: pixelated;
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4);
 }
 
-/* каждая грань поворачивается и отодвигается на половину размера куба (90px) */
-.front  { transform: rotateY(0deg)   translateZ(90px); }
-.back   { transform: rotateY(180deg) translateZ(90px); }
-.right  { transform: rotateY(90deg)  translateZ(90px); filter: brightness(0.75); }
-.left   { transform: rotateY(-90deg) translateZ(90px); filter: brightness(0.75); }
-.top    { transform: rotateX(90deg)  translateZ(90px); filter: brightness(1.15); }
-.bottom { transform: rotateX(-90deg) translateZ(90px); filter: brightness(0.5); }
+/* каждая грань поворачивается и отодвигается на половину размера куба (85px).
+   brightness - простое "освещение": верх светлее, бока и низ темнее */
+.front  { transform: rotateY(0deg)   translateZ(85px); }
+.back   { transform: rotateY(180deg) translateZ(85px); filter: brightness(0.7); }
+.right  { transform: rotateY(90deg)  translateZ(85px); filter: brightness(0.8); }
+.left   { transform: rotateY(-90deg) translateZ(85px); filter: brightness(0.8); }
+.top    { transform: rotateX(90deg)  translateZ(85px); filter: brightness(1.15); }
+.bottom { transform: rotateX(-90deg) translateZ(85px); filter: brightness(0.5); }
+
+@media (max-width: 700px) {
+    .viewer-arrow {
+        font-size: 44px;
+        padding: 6px;
+        top: auto;
+        bottom: 10px;
+        transform: none;
+    }
+}

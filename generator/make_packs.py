@@ -253,7 +253,8 @@ def ore(colors, seed):
     return img
 
 
-def planks(seed):
+def planks(seed, ramp=None, line="#0f0a0c"):
+    ramp = ramp or WOOD
     rnd = random.Random(seed)
     # 4 доски по 4 пикселя, каждая доска поделена на 2 куска в случайном месте
     cells = [[0] * SIZE for _ in range(SIZE)]
@@ -266,7 +267,7 @@ def planks(seed):
                     cells[x][y] = -1
                 else:
                     cells[x][y] = row * 2 + (1 if x > cut else 0)
-    img = paint_pieces(cells, WOOD, "#0f0a0c", seed, bevel=0.15)
+    img = paint_pieces(cells, ramp, line, seed, bevel=0.15)
     # древесные волокна: короткие тёмные горизонтальные чёрточки
     for _ in range(10):
         x, y = rnd.randint(0, 15), rnd.randint(0, 15)
@@ -277,7 +278,8 @@ def planks(seed):
     return img
 
 
-def log_side(seed):
+def log_side(seed, bark=None, moss=True):
+    bark = bark or BARK
     rnd = random.Random(seed)
     img = Image.new("RGBA", (SIZE, SIZE))
     # у каждого столбца своя "высота" коры, вдоль столбца она меняется плавно
@@ -290,28 +292,29 @@ def log_side(seed):
                 v *= 0.3
             elif x % 4 == 1:    # край борозды освещён
                 v = min(1, v + 0.3)
-            img.putpixel((x, y), from_ramp(BARK, v))
+            img.putpixel((x, y), from_ramp(bark, v))
     # немного тёмно-зелёного мха снизу
-    for _ in range(6):
+    for _ in range(6 if moss else 0):
         p = (rnd.randint(0, 15), rnd.randint(11, 15))
         img.putpixel(p, mix(img.getpixel(p), rgb("#2c3a24"), 0.6))
     return img
 
 
-def log_top(seed):
-    img = log_side(seed)
+def log_top(seed, bark=None, wood=None):
+    wood = wood or WOOD
+    img = log_side(seed, bark, moss=False)
     rnd = random.Random(seed)
     for x in range(1, SIZE - 1):
         for y in range(1, SIZE - 1):
             # расстояние до центра - по нему рисуем годовые кольца
             d = math.sqrt((x - 7.5) ** 2 + (y - 7.5) ** 2)
             ring = int(d + rnd.random() * 0.6)
-            color = rgb(WOOD[4]) if ring % 2 == 0 else rgb(WOOD[2])
+            color = rgb(wood[4]) if ring % 2 == 0 else rgb(wood[2])
             if d > 6.2:
-                color = rgb(WOOD[1])    # тёмный край у коры
+                color = rgb(wood[1])    # тёмный край у коры
             img.putpixel((x, y), color)
-    img.putpixel((7, 7), rgb(WOOD[0]))  # серединка
-    img.putpixel((8, 8), rgb(WOOD[0]))
+    img.putpixel((7, 7), rgb(wood[0]))  # серединка
+    img.putpixel((8, 8), rgb(wood[0]))
     return img
 
 
@@ -800,6 +803,184 @@ def metal_block(light, mid, dark, rune):
 
 
 # =====================================================================
+# Природа. Важная особенность Minecraft: траву и листву игра сама
+# раскрашивает в цвет биома (умножает цвет картинки на зелёный).
+# Поэтому эти текстуры рисуем в оттенках серого. Чем темнее серый,
+# тем темнее будет трава в игре - для тёмного фэнтези как раз то, что нужно.
+# =====================================================================
+
+GRAY = ["#3a3a3a", "#4a4a4a", "#5a5a5a", "#6c6c6c", "#808080"]
+
+# Цвета биома, которыми игра красит траву и листву (для картинок на сайте)
+TINTS = {
+    "grass_block_top.png": "#91bd59",
+    "grass_block_side_overlay.png": "#91bd59",
+    "oak_leaves.png": "#77ab2f",
+    "spruce_leaves.png": "#619961",
+    "birch_leaves.png": "#80a755",
+}
+
+SPRUCE_BARK = ["#0c0807", "#150e0b", "#1e1510", "#281c15", "#32241b"]
+SPRUCE_WOOD = ["#1a100c", "#241710", "#2f1e15", "#3a261b", "#462f21"]
+BIRCH_BARK = ["#3e3a40", "#5a5560", "#77717d", "#8f8996", "#a8a2ae"]
+BIRCH_WOOD = ["#3a3330", "#4a423c", "#5a5048", "#6a5f55", "#7a6e62"]
+DARK_OAK_BARK = ["#070506", "#0d090b", "#130d10", "#1a1216", "#21171c"]
+DARK_OAK_WOOD = ["#120b0a", "#1a100e", "#221613", "#2b1c18", "#34231e"]
+
+
+def grass_top(seed):
+    img = noise_texture(GRAY, seed, passes=1, rough=0.4)
+    rnd = random.Random(seed)
+    # отдельные светлые травинки
+    for _ in range(14):
+        img.putpixel((rnd.randint(0, 15), rnd.randint(0, 15)), rgb("#9a9a9a"))
+    return img
+
+
+def grass_side(seed):
+    # Боковая сторона блока травы - это земля. Траву сверху рисует отдельная
+    # прозрачная картинка overlay, которую игра красит в цвет биома.
+    img = dirt(seed)
+    rnd = random.Random(seed)
+    for x in range(SIZE):
+        for y in range(rnd.randint(2, 4)):
+            img.putpixel((x, y), lighter(img.getpixel((x, y)), -0.3))
+    return img
+
+
+def grass_overlay(seed):
+    rnd = random.Random(seed)
+    img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    for x in range(SIZE):
+        # длина свисающей травы в каждом столбце разная
+        for y in range(rnd.randint(2, 5)):
+            img.putpixel((x, y), rgb(rnd.choice(GRAY)))
+    return img
+
+
+def leaves(seed, holes=0.22):
+    # Листва с дырками (прозрачными пикселями) - сквозь неё видно небо
+    rnd = random.Random(seed)
+    n = smooth_noise(seed, 1)
+    img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    for x in range(SIZE):
+        for y in range(SIZE):
+            if rnd.random() < holes:
+                continue
+            img.putpixel((x, y), from_ramp(GRAY, n[x][y] * 0.7 + rnd.random() * 0.3))
+    return img
+
+
+def birch_side(seed):
+    img = log_side(seed, BIRCH_BARK, moss=False)
+    rnd = random.Random(seed)
+    # чёрные полоски на коре берёзы
+    for _ in range(6):
+        x, y = rnd.randint(0, 12), rnd.randint(0, 15)
+        for dx in range(rnd.randint(2, 4)):
+            img.putpixel(((x + dx) % SIZE, y), rgb("#120e14"))
+    return img
+
+
+# =====================================================================
+# Подземное царство
+# =====================================================================
+
+DEEPSLATE = ["#0f0e14", "#17161e", "#201e28", "#2a2733", "#34313e"]
+
+
+def deepslate(seed):
+    # глубинный сланец: горизонтальные слои
+    img = noise_texture(DEEPSLATE, seed, passes=1, rough=0.3)
+    rnd = random.Random(seed)
+    for y in range(0, SIZE, 4):
+        for x in range(SIZE):
+            if rnd.random() < 0.7:
+                img.putpixel((x, (y + rnd.choice([0, 1])) % SIZE), rgb(DEEPSLATE[0]))
+    return img
+
+
+def deepslate_top(seed):
+    return paint_pieces(voronoi_map(seed, 5), DEEPSLATE, "#08070b", seed, bevel=0.15)
+
+
+def netherrack(seed):
+    ramp = ["#2a0a0e", "#3a0f14", "#4d141a", "#601a21", "#742029"]
+    img = noise_texture(ramp, seed, passes=1, rough=0.5)
+    return add_cracks(img, seed, 3)
+
+
+def glowstone(seed):
+    # светокамень: тёмные кусочки и яркие светящиеся камни
+    ramp = ["#5a3a14", "#8a5a1c", "#c48a2a", "#f2c14e", "#ffe9a8"]
+    return paint_pieces(voronoi_map(seed, 9), ramp, "#2a1a0a", seed, bevel=0.3)
+
+
+def glass():
+    # стекло: прозрачное, с тёмной рамкой и парой бликов
+    img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    frame = rgb("#3a3445")
+    for i in range(SIZE):
+        for p in [(i, 0), (i, 15), (0, i), (15, i)]:
+            img.putpixel(p, frame)
+    for i in range(3):   # блики по диагонали
+        img.putpixel((3 + i, 5 - i), rgb("#c8bfd6"))
+        img.putpixel((9 + i, 12 - i), rgb("#8a8096"))
+    return img
+
+
+def tnt_side(seed):
+    # красные шашки, посередине белая полоса с надписью
+    img = Image.new("RGBA", (SIZE, SIZE))
+    rnd = random.Random(seed)
+    for x in range(SIZE):
+        for y in range(SIZE):
+            if 5 <= y <= 10:
+                color = rgb("#d8cdb8")                       # бумажная полоса
+            elif x % 4 == 0:
+                color = rgb("#3a0a10")                        # щели между шашками
+            else:
+                color = lighter(rgb("#8b1424"), rnd.uniform(-0.15, 0.1))
+            img.putpixel((x, y), color)
+    # надпись "TNT" чёрными пикселями
+    letters = ["###.#..#.###", ".#..##.#..#.", ".#..#.##..#.", ".#..#..#..#."]
+    for row, line in enumerate(letters):
+        for col, ch in enumerate(line):
+            if ch == "#":
+                img.putpixel((2 + col, 6 + row), rgb("#120709"))
+    return img
+
+
+def tnt_top(seed, bottom=False):
+    img = Image.new("RGBA", (SIZE, SIZE))
+    rnd = random.Random(seed)
+    for x in range(SIZE):
+        for y in range(SIZE):
+            # круглые торцы шашек
+            if (x % 4 in (1, 2)) and (y % 4 in (1, 2)):
+                color = rgb("#3a0a10") if not bottom else rgb("#5a1420")
+            else:
+                color = lighter(rgb("#8b1424"), rnd.uniform(-0.15, 0.1))
+            img.putpixel((x, y), color)
+    if not bottom:
+        # фитиль в центре
+        img.putpixel((7, 7), rgb("#d8cdb8"))
+        img.putpixel((8, 8), rgb("#ff7a2a"))
+    return img
+
+
+def crying_obsidian(seed):
+    img = obsidian(seed)
+    rnd = random.Random(seed + 5)
+    # фиолетовые "слёзы" стекают вниз
+    for _ in range(4):
+        x, y = rnd.randint(0, 15), rnd.randint(0, 8)
+        for dy in range(rnd.randint(2, 5)):
+            img.putpixel((x, (y + dy) % SIZE), rgb("#8a3fd0") if dy else rgb("#d9b8ff"))
+    return img
+
+
+# =====================================================================
 # Описание паков: название, описание и какие файлы чем рисовать.
 # Русские названия текстур нужны для страницы "Все текстуры".
 # =====================================================================
@@ -906,6 +1087,42 @@ PACKS = [
             "block/bookshelf.png": ("Книжная полка", bookshelf(34)),
         },
     },
+    {
+        "id": "dark_thicket",
+        "name": "Тёмная чаща",
+        "textures": {
+            "block/grass_block_top.png": ("Трава (сверху)", grass_top(41)),
+            "block/grass_block_side.png": ("Блок травы", grass_side(24)),
+            "block/grass_block_side_overlay.png": ("_overlay", grass_overlay(42)),
+            "block/oak_leaves.png": ("Дубовая листва", leaves(43)),
+            "block/spruce_leaves.png": ("Еловая хвоя", leaves(44, holes=0.3)),
+            "block/birch_leaves.png": ("Берёзовая листва", leaves(45, holes=0.15)),
+            "block/spruce_log.png": ("Еловое бревно", log_side(46, SPRUCE_BARK)),
+            "block/spruce_log_top.png": ("Срез ели", log_top(46, SPRUCE_BARK, SPRUCE_WOOD)),
+            "block/spruce_planks.png": ("Еловые доски", planks(47, SPRUCE_WOOD, "#070403")),
+            "block/birch_log.png": ("Берёзовое бревно", birch_side(48)),
+            "block/birch_log_top.png": ("Срез берёзы", log_top(48, BIRCH_BARK, BIRCH_WOOD)),
+            "block/birch_planks.png": ("Берёзовые доски", planks(49, BIRCH_WOOD, "#1e1a18")),
+            "block/dark_oak_log.png": ("Бревно тёмного дуба", log_side(50, DARK_OAK_BARK)),
+            "block/dark_oak_log_top.png": ("Срез тёмного дуба", log_top(50, DARK_OAK_BARK, DARK_OAK_WOOD)),
+            "block/dark_oak_planks.png": ("Доски тёмного дуба", planks(51, DARK_OAK_WOOD, "#050303")),
+        },
+    },
+    {
+        "id": "underworld",
+        "name": "Подземное царство",
+        "textures": {
+            "block/deepslate.png": ("Глубинный сланец", deepslate(61)),
+            "block/deepslate_top.png": ("Сланец (сверху)", deepslate_top(62)),
+            "block/netherrack.png": ("Незеррак", netherrack(63)),
+            "block/glowstone.png": ("Светокамень", glowstone(64)),
+            "block/glass.png": ("Стекло", glass()),
+            "block/tnt_side.png": ("Динамит", tnt_side(65)),
+            "block/tnt_top.png": ("Динамит (сверху)", tnt_top(65)),
+            "block/tnt_bottom.png": ("Динамит (снизу)", tnt_top(65, bottom=True)),
+            "block/crying_obsidian.png": ("Плачущий обсидиан", crying_obsidian(66)),
+        },
+    },
 ]
 
 # Доспехи заполняем циклом: 3 материала x 4 предмета = 12 картинок
@@ -916,10 +1133,11 @@ ARMOR_PARTS = [
     ("leggings", LEGGINGS, "ые поножи"),
     ("boots", BOOTS, "ые ботинки"),
 ]
+armor_pack = [p for p in PACKS if p["id"] == "knight_armor"][0]
 for material in ["iron", "diamond", "netherite"]:
     for part, template, ending in ARMOR_PARTS:
         name = ARMOR_NAMES[material] + ending
-        PACKS[-2]["textures"]["item/" + material + "_" + part + ".png"] = (name, draw_template(template, ARMOR[material]))
+        armor_pack["textures"]["item/" + material + "_" + part + ".png"] = (name, draw_template(template, ARMOR[material]))
 # Общий пак: все текстуры из всех паков в одном файле
 ALL_PACK = {"id": "dark_fantasy_all", "name": "Тёмное фэнтези: все текстуры", "textures": {}}
 for p in PACKS:
@@ -933,18 +1151,49 @@ for p in PACKS:
 def make_icon(textures):
     # Иконка пака 64x64: первые 4 текстуры сеткой 2x2
     icon = Image.new("RGBA", (64, 64), rgb("#120e18"))
-    for i, (_, tex) in enumerate(list(textures.values())[:4]):
+    for i, (_, tex) in enumerate(site_textures(textures)[:4]):
         big = tex.resize((32, 32), Image.NEAREST)  # NEAREST, чтобы пиксели не размылись
         icon.paste(big, ((i % 2) * 32, (i // 2) * 32), big)
     return icon
 
 
+def tint(img, color):
+    # Красим серую картинку в цвет биома: каждый канал умножаем на цвет
+    c = rgb(color)
+    out = Image.new("RGBA", img.size)
+    for x in range(img.width):
+        for y in range(img.height):
+            r, g, b, a = img.getpixel((x, y))
+            out.putpixel((x, y), (r * c[0] // 255, g * c[1] // 255, b * c[2] // 255, a))
+    return out
+
+
+def site_view(path, img, textures):
+    # Как текстура выглядит в игре - такую картинку и показываем на сайте
+    name = os.path.basename(path)
+    if name in TINTS:
+        img = tint(img, TINTS[name])
+    if name == "grass_block_side.png":
+        # к земле сбоку добавляем зелёную траву сверху
+        overlay = tint(textures["block/grass_block_side_overlay.png"][1], TINTS["grass_block_side_overlay.png"])
+        img = img.copy()
+        img.paste(overlay, (0, 0), overlay)
+    return img
+
+
+def site_textures(textures):
+    # список (путь, картинка) для сайта; названия с "_" - служебные, их не показываем
+    return [(path, site_view(path, img, textures)) for path, (name, img) in textures.items()
+            if not name.startswith("_")]
+
+
 def make_preview(textures):
     # Картинка для карточки: все текстуры пака в один ряд, каждая 16x16 с отступом 2.
     # На сайте она увеличивается через CSS (image-rendering: pixelated)
-    count = len(textures)
+    items = site_textures(textures)
+    count = len(items)
     preview = Image.new("RGBA", (count * 18 - 2, 16), (0, 0, 0, 0))
-    for i, (_, tex) in enumerate(textures.values()):
+    for i, (_, tex) in enumerate(items):
         preview.paste(tex, (i * 18, 0), tex)
     return preview
 
@@ -1076,7 +1325,7 @@ if __name__ == "__main__":
     build_pack(ALL_PACK)
 
     # каждая текстура отдельной картинкой - для страницы "Все текстуры"
-    for path, (_, img) in ALL_PACK["textures"].items():
+    for path, img in site_textures(ALL_PACK["textures"]):
         img.save(os.path.join(IMAGES_DIR, "tex", os.path.basename(path)))
 
     make_banner().save(os.path.join(IMAGES_DIR, "banner.png"))
