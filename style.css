@@ -1,0 +1,205 @@
+/* Общий файл стилей для всех страниц сайта.
+   Стиль: Dark Fantasy (тёмные цвета, бордовый и золотой) */
+
+/* Цвета вынесены в переменные, чтобы их было легко поменять в одном месте */
+:root {
+    --bg: #0e0b12;          /* фон страницы */
+    --panel: #1a1420;       /* фон карточек и блоков */
+    --border: #3a2a3f;      /* рамки */
+    --text: #d8cfc4;        /* основной текст */
+    --muted: #9a8f99;       /* второстепенный текст */
+    --gold: #c9a45c;        /* золотой для заголовков */
+    --blood: #8b1e2d;       /* бордовый для кнопок */
+    --blood-light: #b02a3d;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: var(--bg);
+    /* лёгкое фиолетовое "свечение" сверху, чтобы фон не был просто чёрным */
+    background-image: radial-gradient(ellipse at top, #2a1733 0%, var(--bg) 60%);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: "PT Serif", Georgia, serif;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: "Cormorant SC", Georgia, serif;
+    color: var(--gold);
+    letter-spacing: 1px;
+}
+
+a {
+    color: var(--gold);
+}
+
+/* ---------- шапка и меню ---------- */
+
+header {
+    border-bottom: 1px solid var(--border);
+    background-color: rgba(10, 7, 13, 0.8);
+}
+
+.header-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 12px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    font-family: "Cormorant SC", Georgia, serif;
+    font-size: 26px;
+    color: var(--gold);
+    text-decoration: none;
+}
+
+nav a {
+    color: var(--text);
+    text-decoration: none;
+    margin-left: 18px;
+}
+
+nav a:hover,
+nav a.active {
+    color: var(--gold);
+    border-bottom: 1px solid var(--gold);
+}
+
+/* ---------- основная часть ---------- */
+
+main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 16px 50px;
+}
+
+.hero {
+    text-align: center;
+    padding: 40px 0 20px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin: 0 0 10px;
+}
+
+.author {
+    color: var(--muted);
+    font-style: italic;
+}
+
+.author b {
+    color: var(--text);
+}
+
+.box {
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin: 20px 0;
+}
+
+.button {
+    display: inline-block;
+    background-color: var(--blood);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 4px;
+    text-decoration: none;
+    border: 1px solid var(--blood-light);
+}
+
+.button:hover {
+    background-color: var(--blood-light);
+}
+
+/* ---------- каталог текстур ---------- */
+
+.search {
+    width: 100%;
+    font-family: inherit;  /* поля ввода сами не берут шрифт страницы */
+    padding: 10px 14px;
+    font-size: 18px;
+    background-color: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+}
+
+.card:hover {
+    border-color: var(--gold);
+}
+
+.card h3 {
+    margin: 0 0 6px;
+    font-size: 26px;
+}
+
+.card img {
+    width: 100%;
+    /* pixelated - чтобы маленькие текстуры не размывались при увеличении */
+    image-rendering: pixelated;
+    background-color: #0a080c;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.tags {
+    color: var(--muted);
+    font-size: 15px;
+}
+
+.not-found {
+    display: none;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* ---------- подвал ---------- */
+
+footer {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--muted);
+    font-size: 15px;
+    padding: 20px 16px;
+}
+
+/* ---------- для телефонов ---------- */
+
+@media (max-width: 600px) {
+    .hero h1 {
+        font-size: 34px;
+    }
+
+    nav a {
+        margin-left: 0;
+        margin-right: 14px;
+    }
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тёмные текстуры — каталог</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@600&family=PT+Serif&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <a class="logo" href="index.html">Тёмные текстуры</a>
+        <nav>
+            <a href="index.html">Главная</a>
+            <a href="textures.html" class="active">Текстуры</a>
+            <a href="contacts.html">Контакты</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <h1>Текстуры</h1>
+    <p>Категория: <b>Фэнтези</b>. Версия игры: <b>1.20.1</b>.</p>
+
+    <!-- поле поиска: при вводе текста скрипт прячет карточки, в которых его нет -->
+    <input type="text" id="search" class="search" placeholder="Поиск по названию, например «руды»">
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>Проклятый камень</h3>
+            <p class="tags">Камень, булыжник, каменные кирпичи, кирпичи, обсидиан</p>
+            <img src="images/cursed_stone.png" alt="Текстуры пака Проклятый камень">
+            <p>Подземелья становятся темнее, а в обсидиане мерцают фиолетовые искры.</p>
+            <a class="button" href="packs/cursed_stone.zip" download>Скачать</a>
+        </div>
+
+        <div class="card">
+            <h3>Светящиеся руды</h3>
+            <p class="tags">Уголь, железо, золото, алмазы, редстоун, изумруды, лазурит</p>
+            <img src="images/dark_ores.png" alt="Текстуры пака Светящиеся руды">
+            <p>Яркие кусочки руды на тёмном камне, их легко заметить в пещере.</p>
+            <a class="button" href="packs/dark_ores.zip" download>Скачать</a>
+        </div>
+
+        <div class="card">
+            <h3>Мёртвый лес</h3>
+            <p class="tags">Дубовые доски, бревно, земля, песок, гравий</p>
+            <img src="images/dead_forest.png" alt="Текстуры пака Мёртвый лес">
+            <p>Мрачное тёмное дерево, сухая земля и пепельный песок.</p>
+            <a class="button" href="packs/dead_forest.zip" download>Скачать</a>
+        </div>
+
+        <div class="card">
+            <h3>Клинки тьмы</h3>
+            <p class="tags">Железный, золотой, алмазный и незеритовый меч</p>
+            <img src="images/dark_blades.png" alt="Текстуры пака Клинки тьмы">
+            <p>Мечи с бордовой гардой. Незеритовый меч светится фиолетовым.</p>
+            <a class="button" href="packs/dark_blades.zip" download>Скачать</a>
+        </div>
+
+    </div>
+
+    <p class="not-found" id="not-found">Ничего не найдено</p>
+</main>
+
+<footer>
+    © 2026 Швецов Артем Игоревич. Проект по информатике.<br>
+    Не является официальным продуктом Minecraft и не связан с Mojang.
+</footer>
+
+<script src="search.js"></script>
+</body>
+</html>
