@@ -370,6 +370,17 @@ def sword(blade, edge, dark, guard, gem, rune=None):
     img.putpixel((1, 14), rgb("#3a2418"))
     img.putpixel((0, 15), rgb(guard))                # навершие
 
+    add_outline(img)
+    return img
+
+
+# =====================================================================
+# Предметы. Общие функции:
+# add_outline - обводит рисунок тёмным контуром,
+# draw_template - рисует картинку "по клеточкам" из строк с буквами.
+# =====================================================================
+
+def add_outline(img):
     # контур: прозрачный пиксель рядом с непрозрачным становится тёмным
     outline = rgb("#0b070d")
     to_fill = []
@@ -384,6 +395,204 @@ def sword(blade, edge, dark, guard, gem, rune=None):
     for p in to_fill:
         img.putpixel(p, outline)
     return img
+
+
+def draw_template(rows, colors, outline=True):
+    # rows - список из строк, каждая буква = один пиксель, точка = прозрачный.
+    # colors - словарь "буква -> цвет". Строк может быть меньше 16, тогда низ пустой.
+    img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    for y, row in enumerate(rows):
+        for x, letter in enumerate(row):
+            if letter != ".":
+                img.putpixel((x, y), rgb(colors[letter]))
+    if outline:
+        add_outline(img)
+    return img
+
+
+def mirror(x, y):
+    # Отражение относительно диагонали, по которой идёт рукоять (из левого нижнего
+    # угла в правый верхний). Нужно, чтобы головка кирки была симметричной.
+    return 15 - y, 15 - x
+
+
+HANDLE = ["#4a3123", "#2c1c14"]   # цвета деревянной рукояти (светлый, тёмный)
+
+
+def handle(img, length):
+    # рукоять по диагонали от левого нижнего угла, полоски через один пиксель
+    for x in range(1, length + 1):
+        img.putpixel((x, 15 - x), rgb(HANDLE[x % 2]))
+
+
+def pickaxe(light, mid, dark):
+    img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    handle(img, 10)
+    # головка - дуга в правом верхнем углу. Рисуем левую половину,
+    # правая получается отражением.
+    outer = [(3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 2), (10, 2), (11, 3), (12, 3)]
+    inner = [(4, 2), (5, 2), (6, 2), (7, 2), (8, 2), (9, 3), (10, 3), (11, 4)]
+    tips = [(2, 2), (3, 2)]
+    for points, color in [(outer, light), (inner, mid), (tips, dark)]:
+        for x, y in points:
+            img.putpixel((x, y), rgb(color))
+            img.putpixel(mirror(x, y), rgb(color))
+    return add_outline(img)
+
+
+def axe(light, mid, dark):
+    img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    handle(img, 14)
+    # лезвие топора слева от верхней части рукояти
+    # широкое лезвие слева и узкая "шейка", которая держится за рукоять
+    blade = {
+        1: range(4, 7),
+        2: range(3, 9),
+        3: range(3, 12),
+        4: range(3, 11),
+        5: range(3, 9),
+        6: range(4, 7),
+    }
+    for y, xs in blade.items():
+        for x in xs:
+            if x == min(xs):
+                color = light        # острая кромка светлая
+            elif x == max(xs):
+                color = dark         # у рукояти тень
+            else:
+                color = mid
+            img.putpixel((x, y), rgb(color))
+    return add_outline(img)
+
+
+def bow():
+    img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    # тетива - прямая диагональ
+    for i in range(13):
+        img.putpixel((2 + i, 1 + i), rgb("#bdb3c4"))
+    # дуга лука (дерево), как головка у кирки
+    arc = [(2, 1), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 1), (9, 1), (10, 2), (11, 2), (12, 3)]
+    for x, y in arc:
+        img.putpixel((x, y + 1), rgb("#3a2418"))
+        img.putpixel(mirror(x, y + 1), rgb("#3a2418"))
+    # кожаная обмотка посередине и красные наконечники
+    for x, y in [(11, 3), (12, 4), (12, 3)]:
+        img.putpixel((x, y), rgb("#7a1622"))
+    img.putpixel((2, 2), rgb("#c2451f"))
+    img.putpixel(mirror(2, 2), rgb("#c2451f"))
+    return add_outline(img)
+
+
+def torch():
+    # Факел: в игре от этой картинки берётся только полоска x=7..8, y=6..15,
+    # поэтому рисуем ровно там. Сверху огонь, ниже палка.
+    img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    img.putpixel((7, 6), rgb("#ffe9a8"))
+    img.putpixel((8, 6), rgb("#ffb347"))
+    img.putpixel((7, 7), rgb("#ff7a2a"))
+    img.putpixel((8, 7), rgb("#c2451f"))
+    for y in range(8, 16):
+        img.putpixel((7, y), rgb("#3a2418"))
+        img.putpixel((8, y), rgb("#22150e"))
+    img.putpixel((7, 8), rgb("#5a1a14"))   # обгоревший кончик
+    return img
+
+
+INGOT = [
+    "",
+    "",
+    "",
+    "",
+    "......LLLLLLL",
+    ".....LAAAAAAAL",
+    "....LAAWAAAAMD",
+    "...LAAAAAAAMD",
+    "..LAAAAAAAMD",
+    "..DMMMMMMMD",
+    "...DDDDDDD",
+]
+
+GEM = [
+    "",
+    "",
+    "....LLLLLLL",
+    "...LAWLAAALA",
+    "..LAWAAAAAAAL",
+    ".LAAAAAAAAAAAM",
+    "..MAAAAAAAAAM",
+    "...MAAAAAAAM",
+    "....MAAAAAM",
+    ".....MAAAM",
+    "......MAM",
+    ".......M",
+]
+
+COAL = [
+    "",
+    "",
+    "",
+    ".....LLL",
+    "...LLAAAL",
+    "..LAAWAAAL",
+    "..AAAAAAAMM",
+    ".LAAAAAAAAM",
+    ".AAAAAAAAMD",
+    "..AAAAAAMMD",
+    "..MAAAAMDD",
+    "...MMMDD",
+]
+
+APPLE = [
+    "",
+    "........S",
+    ".......SGG",
+    "......SGG",
+    "...RRR.S.RRR",
+    "..RRRRRRRRRRR",
+    ".RRWRRRRRRRRRR",
+    ".RWRRRRRRRRRRD",
+    ".RRRRRRRRRRRRD",
+    ".RRRRRRRRRRRDD",
+    "..RRRRRRRRRRD",
+    "...RRRRRRRDD",
+    "....RRR.RRD",
+]
+
+BOOK = [
+    "",
+    "",
+    "..RRRRRRRRRRP",
+    "..RRRRRRRRRRP",
+    "..RRGGGGGGRRP",
+    "..RRGRRRRGRRP",
+    "..RRGRWWRGRRP",
+    "..RRGRWWRGRRP",
+    "..RRGRRRRGRRP",
+    "..RRGGGGGGRRP",
+    "..RRRRRRRRRRP",
+    "..RRRRRRRRRRP",
+    "..DDDDDDDDDDP",
+]
+
+
+def ender_pearl():
+    # Жемчуг Края в виде тёмного глаза с бирюзовым зрачком
+    img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    for x in range(SIZE):
+        for y in range(SIZE):
+            d = math.sqrt((x - 7.5) ** 2 + (y - 7.5) ** 2)
+            if d < 5.5:
+                # чем ближе к краю, тем темнее; сверху-слева блик
+                color = mix(rgb("#1f6b5e"), rgb("#07201c"), d / 5.5)
+                if x + y < 11 and d > 3.5:
+                    color = lighter(color, 0.25)
+                img.putpixel((x, y), color)
+    for x, y in [(7, 7), (8, 7), (7, 8), (8, 8)]:
+        img.putpixel((x, y), rgb("#6dffd9"))    # светящийся зрачок
+    img.putpixel((7, 6), rgb("#0b2d27"))
+    img.putpixel((8, 9), rgb("#0b2d27"))
+    img.putpixel((5, 5), rgb("#d4fff3"))        # блик
+    return add_outline(img)
 
 
 # =====================================================================
@@ -440,6 +649,34 @@ PACKS = [
                                        sword("#3cc8d8", "#c8ffff", "#16717f", "#2a2f4a", "#ffffff")),
             "item/netherite_sword.png": ("Незеритовый меч",
                                          sword("#4f4458", "#9a8aa8", "#2a2330", "#2a2330", "#b06bff", rune="#c48aff")),
+        },
+    },
+    {
+        "id": "hero_arsenal",
+        "name": "Арсенал героя",
+        "textures": {
+            "item/iron_pickaxe.png": ("Железная кирка", pickaxe("#e2e6f0", "#9ba0b0", "#5b5f6e")),
+            "item/diamond_pickaxe.png": ("Алмазная кирка", pickaxe("#c8ffff", "#3cc8d8", "#16717f")),
+            "item/netherite_pickaxe.png": ("Незеритовая кирка", pickaxe("#b98aff", "#4f4458", "#2a2330")),
+            "item/iron_axe.png": ("Железный топор", axe("#e2e6f0", "#9ba0b0", "#5b5f6e")),
+            "item/diamond_axe.png": ("Алмазный топор", axe("#c8ffff", "#3cc8d8", "#16717f")),
+            "item/bow.png": ("Лук", bow()),
+            "block/torch.png": ("Факел", torch()),
+        },
+    },
+    {
+        "id": "dungeon_treasures",
+        "name": "Сокровища подземелий",
+        "textures": {
+            "item/diamond.png": ("Алмаз", draw_template(GEM, {"L": "#d4ffff", "A": "#3cc8d8", "M": "#16717f", "W": "#ffffff"})),
+            "item/emerald.png": ("Изумруд", draw_template(GEM, {"L": "#b8ffcb", "A": "#2fd46a", "M": "#0f6e33", "W": "#ffffff"})),
+            "item/iron_ingot.png": ("Железный слиток", draw_template(INGOT, {"L": "#ffffff", "A": "#c9ccd6", "M": "#8a8f9e", "D": "#4e5260", "W": "#ffffff"})),
+            "item/gold_ingot.png": ("Золотой слиток", draw_template(INGOT, {"L": "#fff6c4", "A": "#f2c14e", "M": "#c08a22", "D": "#6e4a0c", "W": "#ffffff"})),
+            "item/coal.png": ("Уголь", draw_template(COAL, {"L": "#55505c", "A": "#26222b", "M": "#16131a", "D": "#08070a", "W": "#8a8492"})),
+            "item/apple.png": ("Кровавое яблоко", draw_template(APPLE, {"R": "#8b1424", "D": "#4a0a14", "W": "#ff8a8a", "S": "#3a2418", "G": "#2c3a24"})),
+            "item/golden_apple.png": ("Золотое яблоко", draw_template(APPLE, {"R": "#e8b03a", "D": "#8a5a12", "W": "#fff6c4", "S": "#3a2418", "G": "#c08a22"})),
+            "item/ender_pearl.png": ("Жемчуг Края", ender_pearl()),
+            "item/book.png": ("Книга заклинаний", draw_template(BOOK, {"R": "#4a0f1a", "G": "#d9b56e", "W": "#ff8a3c", "P": "#d8cdb8", "D": "#2a070e"})),
         },
     },
 ]
