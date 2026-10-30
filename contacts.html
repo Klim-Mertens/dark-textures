@@ -4,35 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Тёмные текстуры — контакты</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@600&family=PT+Serif&display=swap" rel="stylesheet">
+    <link rel="icon" href="images/icon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital@0;1&family=Cormorant+SC:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
     <div class="header-inner">
-        <a class="logo" href="index.html">Тёмные текстуры</a>
+        <a class="logo" href="index.html"><img src="images/icon.png" alt="">Тёмные текстуры</a>
         <nav>
             <a href="index.html">Главная</a>
             <a href="textures.html">Текстуры</a>
+            <a href="all.html">Все текстуры</a>
             <a href="contacts.html" class="active">Контакты</a>
         </nav>
     </div>
 </header>
 
 <main>
-    <h1>Контакты</h1>
-
-    <div class="box">
-        <p><b>Автор:</b> Швецов Артем Игоревич</p>
-        <p><b>Школа:</b> Школа № 2100, 10 «И» класс</p>
-        <!-- mailto: открывает почтовую программу, tel: позволяет позвонить с телефона -->
-        <p><b>Почта:</b> <a href="mailto:shvetsovartemii@icloud.com">shvetsovartemii@icloud.com</a></p>
-        <p><b>Телефон:</b> <a href="tel:+79101886017">8-910-188-60-17</a></p>
+    <div class="page-title">
+        <h1>Контакты</h1>
+        <p>Отправь весточку автору</p>
     </div>
 
-    <div class="box">
-        <p>Если нашли ошибку в текстурах или есть идея для нового пака — напишите мне на почту.</p>
+    <div class="divider">◆</div>
+
+    <div class="box contacts">
+        <!-- dl - список "название: значение", удобно для контактов -->
+        <dl>
+            <dt>Автор</dt>
+            <dd>Швецов Артем Игоревич</dd>
+
+            <dt>Школа</dt>
+            <dd>Школа № 2100, 10 «И» класс</dd>
+
+            <!-- mailto: открывает почтовую программу, tel: позволяет позвонить с телефона -->
+            <dt>Почта</dt>
+            <dd><a href="mailto:shvetsovartemii@icloud.com">shvetsovartemii@icloud.com</a></dd>
+
+            <dt>Телефон</dt>
+            <dd><a href="tel:+79101886017">8-910-188-60-17</a></dd>
+        </dl>
+
+        <div class="divider">◆</div>
+
+        <p>Если нашёл ошибку в текстурах или есть идея для нового пака, напиши мне на почту.</p>
     </div>
 </main>
 

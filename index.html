@@ -4,49 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Тёмные текстуры — главная</title>
+    <link rel="icon" href="images/icon.png">
     <!-- шрифты с Google Fonts (оба поддерживают русские буквы) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@600&family=PT+Serif&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital@0;1&family=Cormorant+SC:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
     <div class="header-inner">
-        <a class="logo" href="index.html">Тёмные текстуры</a>
+        <a class="logo" href="index.html"><img src="images/icon.png" alt="">Тёмные текстуры</a>
         <nav>
             <a href="index.html" class="active">Главная</a>
             <a href="textures.html">Текстуры</a>
+            <a href="all.html">Все текстуры</a>
             <a href="contacts.html">Контакты</a>
         </nav>
     </div>
 </header>
 
-<main>
-    <div class="hero">
-        <h1>Тёмные текстуры для Minecraft</h1>
-        <p>Ресурспаки в стиле Dark Fantasy для версии 1.20.1</p>
+<!-- Баннер с замком. Картинку нарисовала программа generator/make_packs.py -->
+<div class="hero">
+    <span class="ember"></span><span class="ember"></span><span class="ember"></span>
+    <span class="ember"></span><span class="ember"></span><span class="ember"></span>
+    <span class="ember"></span><span class="ember"></span><span class="ember"></span>
+
+    <div class="hero-text">
+        <h1>Тёмные текстуры<br>для Minecraft</h1>
+        <p class="subtitle">Ресурспаки в стиле тёмного фэнтези для версии 1.20.1</p>
         <p class="author">Автор проекта: <b>Швецов Артем Игоревич</b></p>
-        <a class="button" href="textures.html">Перейти к текстурам</a>
+        <br>
+        <a class="button big" href="textures.html">Войти в хранилище</a>
+    </div>
+</div>
+
+<main>
+    <div class="divider">◆</div>
+
+    <div class="two-columns">
+        <div class="box">
+            <h2>О проекте</h2>
+            <p class="drop-cap">
+                Когда опускается кровавая луна, привычный мир Minecraft становится темнее.
+                Этот сайт сделан как проект по информатике. На нём можно бесплатно скачать
+                ресурспаки (наборы текстур), которые превращают игру в мрачное средневековье.
+            </p>
+            <p>
+                Все текстуры нарисованы программой на Python, которую я написал сам,
+                поэтому их можно спокойно выкладывать и скачивать.
+            </p>
+        </div>
+
+        <div class="box">
+            <h2>Что внутри</h2>
+            <p>Четыре пака и один общий, в котором собрано всё сразу:</p>
+            <ul>
+                <li><b>Проклятый камень</b> — камень, булыжник, кирпичи, обсидиан</li>
+                <li><b>Светящиеся руды</b> — руды, которые видно в темноте пещер</li>
+                <li><b>Мёртвый лес</b> — тёмное дерево, земля и пепел</li>
+                <li><b>Клинки тьмы</b> — мечи с гардой и камнем</li>
+            </ul>
+            <a href="all.html">Посмотреть все 22 текстуры</a>
+        </div>
     </div>
 
-    <div class="box">
-        <h2>О проекте</h2>
-        <p>
-            Этот сайт сделан как проект по информатике. На нём можно бесплатно скачать
-            ресурспаки (наборы текстур) для Minecraft. Все текстуры нарисованы с помощью
-            программы на Python, которую я написал сам, поэтому их можно спокойно
-            выкладывать и скачивать.
-        </p>
-        <p>
-            Стиль паков — тёмное фэнтези: мрачный камень, мёртвый лес,
-            светящиеся руды и проклятые мечи.
-        </p>
-    </div>
+    <div class="divider">◆</div>
 
     <div class="box">
         <h2>Как установить текстуры</h2>
         <ol>
-            <li>Скачай zip-файл пака на странице <a href="textures.html">«Текстуры»</a>. Распаковывать его не нужно.</li>
+            <li>Скачай zip-файл пака на странице <a href="textures.html">«Текстуры»</a>
+                или сразу всё на странице <a href="all.html">«Все текстуры»</a>. Распаковывать файл не нужно.</li>
             <li>Запусти Minecraft 1.20.1 и открой <i>Настройки → Пакеты ресурсов → Открыть папку пакетов</i>.</li>
             <li>Перетащи скачанный zip-файл в эту папку.</li>
             <li>Вернись в игру, нажми на стрелку рядом с паком, чтобы он попал в список «Выбранные», и нажми «Готово».</li>
