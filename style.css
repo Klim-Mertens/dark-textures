@@ -590,6 +590,10 @@ main {
     margin: 0;
 }
 
+.center {
+    text-align: center;
+}
+
 .not-found {
     display: none;
     color: var(--muted);

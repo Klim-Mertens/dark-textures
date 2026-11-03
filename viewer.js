@@ -63,9 +63,14 @@ scene.addEventListener("pointermove", function (event) {
     lastY = event.clientY;
 });
 
-scene.addEventListener("pointerup", function () {
+function stopDrag() {
     dragging = false;
-});
+}
+
+scene.addEventListener("pointerup", stopDrag);
+// pointercancel бывает, если браузер сам прервал касание (например, телефон начал прокрутку),
+// без него куб "залипал" бы в режиме перетаскивания
+scene.addEventListener("pointercancel", stopDrag);
 
 // колёсико мыши - приблизить или отдалить
 scene.addEventListener("wheel", function (event) {
@@ -211,5 +216,8 @@ for (let button of filterButtons) {
 
 document.getElementById("random").addEventListener("click", function () {
     let list = visibleTextures();
+    if (list.length === 0) {
+        return;
+    }
     openTexture(Math.floor(Math.random() * list.length));
 });
