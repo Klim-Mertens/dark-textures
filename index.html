@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Защита (Content Security Policy): браузер будет загружать скрипты, картинки и стили
+         только с нашего сайта, а шрифты только с Google Fonts. Чужой код подключить не получится. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
     <title>Dark Fantasy — главная</title>
     <link rel="icon" href="images/icon.png">
     <!-- шрифты с Google Fonts, какой для чего - написано в начале style.css -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@700&family=Cormorant+SC:wght@700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
